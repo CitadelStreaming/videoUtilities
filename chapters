@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+ffprobe -show_chapters "${1}" -of json 2>/dev/null |\
+    jq -r '.chapters[] | .sec=((.start / 1000) | floor) % 60 | .min=(((.start / 1000) - .sec) / 60 | floor) | "\("0\(.min)" | .[-2:]):\("0\(.sec)" | .[-2:]) \(.tags.title)"'

@@ -7,6 +7,17 @@ fi
 while [[ ${#@} -gt 0 ]]; do
     video="${1}"
     shift
-    ffmpeg -i "${video}" -c:v cfhd -c:a copy "Proxy/${video}.avi"
+    startTimecode="$(ffprobe -show_streams -of json "${video}" 2>/dev/null \
+        | jq -r '.streams[] | select(.tags.timecode).tags.timecode')"
+    ffmpeg \
+        -loglevel fatal \
+        -i "${video}" \
+        -c:v cfhd \
+        -c:a copy \
+        -c:d copy \
+        -timecode ${startTimecode} \
+        -copy_unknown \
+        -s 1920x1080 \
+        "Proxy/${video}"
 done
 

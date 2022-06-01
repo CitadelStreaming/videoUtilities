@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [[ ! -d ./Proxy ]]; then
+    mkdir -p Proxy
+fi
+
+while [[ ${#@} -gt 0 ]]; do
+    video="${1}"
+    shift
+    ffmpeg -i "${video}" -c:v cfhd -c:a copy "Proxy/${video}.avi"
+done
+
